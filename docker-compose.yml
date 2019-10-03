@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  test: &base
+    image: kiwy-test
+    build: .
+    volumes:
+      - .:/usr/local/kiwy
+    command: make test
+
+  app:
+    <<: *base
+    command: make run
