@@ -1,86 +1,20 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
+	"github.com/michelsazevedo/kiwy/pkg/request"
 	"log"
-	"net/http"
-	"runtime"
-	"time"
 )
-
-const (
-	url = "https://us-central1-rdsm-analytics-development.cloudfunctions.net/random"
-)
-
-type Result struct {
-	TableId      string                 `json:"tableId"`
-	Key          string                 `json:"key"`
-	StartDate    time.Time              `json:"startDate"`
-	EndDate      time.Time              `json:"endDate"`
-	SysDate      time.Time              `json:"sysDate"`
-	SysTime      float32                `json:"sysTime"`
-	Count        int                    `json:"count"`
-	ResultEvents map[string]interface{} `json:"resultEvents"`
-}
-
-func makeParallelsRequests(numOfRequests int, ch chan Result) {
-	defer close(ch)
-	var results = []chan Result{}
-
-	for i := 0; i < numOfRequests; i++ {
-		results = append(results, make(chan Result))
-		go makeRequest(results[i])
-	}
-
-	for i := range results {
-		for result := range results[i] {
-			ch <- result
-		}
-	}
-}
-
-func makeRequest(ch chan Result) {
-	defer close(ch)
-	res, err := http.Get(url)
-	if err != nil {
-		ch <- Result{}
-	}
-
-	defer res.Body.Close()
-
-	jsonData, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		ch <- Result{}
-	}
-
-	var result Result
-
-	err = json.Unmarshal([]byte(jsonData), &result)
-	if err != nil {
-		ch <- Result{}
-	}
-
-	ch <- result
-}
 
 func main() {
-	concorrentWorkers = 800
+	concorrentWorkers := 10
 
-	log.Printf("Number Of CPU's ~> %d", runtime.NumCPU())
-
-	result := make(chan Result)
-	go makeParallelsRequests(concorrentWorkers, result)
-
-	var elapsedTime float32
+	result := make(chan request.Result)
+	go request.MakeParallelsRequests(concorrentWorkers, result)
 
 	for res := range result {
-		elapsedTime += res.SysTime
-
 		log.Printf(
 			"<Result table: %s key: %s, SysDate: %s sysTime: %f>",
 			res.TableId, res.Key, res.SysDate, res.SysTime,
 		)
 	}
-	log.Println("Avg: ", elapsedTime/concorrentWorkers)
 }
