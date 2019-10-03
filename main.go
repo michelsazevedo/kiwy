@@ -1,15 +1,16 @@
 package main
 
 import (
-	"github.com/michelsazevedo/kiwy/pkg/request"
 	"log"
+
+	"github.com/michelsazevedo/kiwy/pkg/request"
 )
 
 func main() {
-	concorrentWorkers := 10
+	concurrentWorkers := 10
 
 	result := make(chan request.Result)
-	go request.MakeParallelsRequests(concorrentWorkers, result)
+	go request.MakeParallelsRequests(concurrentWorkers, result)
 
 	for res := range result {
 		log.Printf(
