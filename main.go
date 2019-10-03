@@ -65,10 +65,12 @@ func makeRequest(ch chan Result) {
 }
 
 func main() {
+	concorrentWorkers = 800
+
 	log.Printf("Number Of CPU's ~> %d", runtime.NumCPU())
 
 	result := make(chan Result)
-	go makeParallelsRequests(800, result)
+	go makeParallelsRequests(concorrentWorkers, result)
 
 	var elapsedTime float32
 
@@ -80,5 +82,5 @@ func main() {
 			res.TableId, res.Key, res.SysDate, res.SysTime,
 		)
 	}
-	log.Println("Avg: ", elapsedTime/200)
+	log.Println("Avg: ", elapsedTime/concorrentWorkers)
 }
