@@ -1,5 +1,7 @@
 # Kiwy
 
+![kiwi](https://github.com/michelsazevedo/kiwy/blob/master/resources/kiwi.png)
+
 Kiwy is a proof of concept to validate [Google BigTable](https://cloud.google.com/bigtable/) performance.
 
 ## Built With
