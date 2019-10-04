@@ -1,21 +1,26 @@
 package main
 
 import (
-	"log"
-
+	"github.com/michelsazevedo/kiwy/pkg/file"
 	"github.com/michelsazevedo/kiwy/pkg/request"
 )
 
 func main() {
-	concurrentWorkers := 10
+	concurrentWorkers := 2
 
 	result := make(chan request.Result)
+	filename := "req.csv"
+
 	go request.MakeParallelsRequests(concurrentWorkers, result)
 
+	file := file.NewCsv(filename)
+	var line []string
+
 	for res := range result {
-		log.Printf(
-			"<Result table: %s key: %s, SysDate: %s sysTime: %f>",
-			res.TableId, res.Key, res.SysDate, res.SysTime,
-		)
+		line = []string{
+			res.TableId,
+			res.Key,
+		}
+		file.WriteLine(line)
 	}
 }

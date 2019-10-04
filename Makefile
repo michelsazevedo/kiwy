@@ -5,7 +5,7 @@
 GOFILES := $(wildcard *.go)
 
 run:
-			go run main.go
+	go run main.go
 
 test:
-			go test $(GOFILES)
+	go test $(GOFILES)
