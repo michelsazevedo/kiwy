@@ -3,16 +3,18 @@ package main
 import (
 	"os"
 	"strconv"
+	"strings"
 
+	"github.com/michelsazevedo/kiwy/internal/secure"
 	"github.com/michelsazevedo/kiwy/pkg/file"
 	"github.com/michelsazevedo/kiwy/pkg/request"
 )
 
 func main() {
-	concurrentWorkers := 2
+	concurrentWorkers := 1000
 
 	result := make(chan request.Result)
-	filename := "req.csv"
+	filename := strings.Join([]string{secure.RandomHex(20), "csv"}, ".")
 
 	go request.MakeParallelsRequests(concurrentWorkers, result)
 
