@@ -7,6 +7,7 @@ Kiwy is a proof of concept to validate [Google BigTable](https://cloud.google.co
 ## Built With
 
 - [Go](https://golang.org/)
+- [R](https://www.r-project.org/)
 
 Plus *some* of packages, a complete list of which is at [/master/go.mod](https://github.com/michelsazevedo/kiwy/blob/master/go.mod).
 
@@ -23,9 +24,11 @@ If you haven't used Docker before, it would be good idea to read this article fi
 
 2. Run `docker-compose build --no-cache` to build the image for the project.
 
-3. Finally, run the local app with `docker-compose run app` and kiwy will perform requests.
+3. Finally, run the local app with `docker-compose run --rm app` and kiwy will perform requests.
 
 4. Aaaaand, you can run the automated tests suite running a `docker-compose run --rm test` with no other parameters!
+
+5. Yeah! you can run the percentiles of the requests by running `docker-compose run --rm rbase`.
 
 ## License
 Copyright © 2019

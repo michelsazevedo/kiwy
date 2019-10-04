@@ -3,24 +3,12 @@ package request
 import (
 	"encoding/json"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
 	"time"
 )
 
 const (
-	urls = []string{
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random1",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random2",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random3",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random4",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random5",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random6",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random7",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random8",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random9",
-		"https://us-central1-rdsm-analytics-development.cloudfunctions.net/random10",
-	}
+	url = "https://us-central1-rdsm-analytics-development.cloudfunctions.net/random1"
 )
 
 type Result struct {
@@ -52,7 +40,7 @@ func MakeParallelsRequests(numOfRequests int, ch chan Result) {
 
 func MakeRequest(ch chan Result) {
 	defer close(ch)
-	res, err := http.Get(GetUrl())
+	res, err := http.Get(url)
 	if err != nil {
 		ch <- Result{}
 	}
@@ -72,9 +60,4 @@ func MakeRequest(ch chan Result) {
 	}
 
 	ch <- result
-}
-
-func GetUrl() string {
-	rand.Seed(time.Now().Unix())
-	return urls[rand.Intn(len(urls))]
 }

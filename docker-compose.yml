@@ -8,9 +8,15 @@ services:
       - .:/kiwy
     command: make test
     environment:
+      - CONCURRENCY=10
       - GOOGLE_APPLICATION_CREDENTIALS=/kiwy/gcloud-credentials.json
       - BUCKET=rdsm-analytics-development
 
   app:
     <<: *base
     command: make run
+
+  rbase:
+    image: r-base
+    command: make percentile
+

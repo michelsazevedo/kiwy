@@ -1,2 +1,4 @@
 go.sum
 gcloud-credentials.json
+resources/csv/**/*.csv
+resources/percentiles/**/*.csv

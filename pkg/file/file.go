@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 
 	"cloud.google.com/go/storage"
 )
@@ -19,13 +20,15 @@ type Csv struct {
 }
 
 func NewCsv(filename, bucket string) *Csv {
-	file, err := os.Create(filename)
+	path := strings.Join([]string{"resources", "csv", filename}, "/")
+
+	file, err := os.Create(path)
 	checkError("Error to create file", err)
 
 	writer := csv.NewWriter(file)
 
 	return &Csv{
-		Filename: filename,
+		Filename: path,
 		File:     file,
 		Writer:   writer,
 		Bucket:   bucket,

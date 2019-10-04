@@ -9,3 +9,6 @@ run:
 
 test:
 	go test $(GOFILES)
+
+percentile:
+	Rscript percentile.r

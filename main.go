@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -11,7 +12,10 @@ import (
 )
 
 func main() {
-	concurrentWorkers := 1000
+	concurrentWorkers, err := strconv.Atoi(os.Getenv("CONCURRENCY"))
+	if err != nil {
+		log.Fatal("Error to load number of workers")
+	}
 
 	result := make(chan request.Result)
 	filename := strings.Join([]string{secure.RandomHex(20), "csv"}, ".")
