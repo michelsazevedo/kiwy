@@ -1,33 +1,56 @@
 package file
 
 import (
+	"context"
 	"encoding/csv"
+	"io"
 	"log"
 	"os"
+	"path"
+
+	"cloud.google.com/go/storage"
 )
 
 type Csv struct {
-	File   *os.File
-	Writer *csv.Writer
+	Filename string
+	File     *os.File
+	Writer   *csv.Writer
+	Bucket   string
 }
 
-func NewCsv(filename string) *Csv {
+func NewCsv(filename, bucket string) *Csv {
 	file, err := os.Create(filename)
 	checkError("Error to create file", err)
-	defer file.Close()
 
 	writer := csv.NewWriter(file)
-	defer writer.Flush()
 
 	return &Csv{
-		File:   file,
-		Writer: writer,
+		Filename: filename,
+		File:     file,
+		Writer:   writer,
+		Bucket:   bucket,
 	}
 }
 
 func (c *Csv) WriteLine(line []string) {
 	err := c.Writer.Write(line)
 	checkError("Cannot write to file", err)
+}
+
+func (c *Csv) SendToGcp() {
+	ctx := context.Background()
+
+	client, err := storage.NewClient(ctx)
+	checkError("Unable to create Gcp client", err)
+
+	object := path.Base(c.Filename)
+
+	writerContext := client.Bucket(c.Bucket).Object(object).NewWriter(ctx)
+
+	defer writerContext.Close()
+
+	_, err = io.Copy(writerContext, c.File)
+	checkError("Error to send file", err)
 }
 
 func checkError(message string, err error) {

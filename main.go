@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/michelsazevedo/kiwy/pkg/file"
 	"github.com/michelsazevedo/kiwy/pkg/request"
 )
@@ -13,7 +15,7 @@ func main() {
 
 	go request.MakeParallelsRequests(concurrentWorkers, result)
 
-	file := file.NewCsv(filename)
+	file := file.NewCsv(filename, os.Getenv("BUCKET"))
 	var line []string
 
 	for res := range result {
@@ -23,4 +25,6 @@ func main() {
 		}
 		file.WriteLine(line)
 	}
+
+	file.SendToGcp()
 }

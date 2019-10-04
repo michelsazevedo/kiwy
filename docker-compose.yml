@@ -5,8 +5,11 @@ services:
     image: kiwy-test
     build: .
     volumes:
-      - .:/usr/local/kiwy
+      - .:/kiwy
     command: make test
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/kiwy/gcloud-credentials.json
+      - BUCKET=rdsm-analytics-development
 
   app:
     <<: *base
