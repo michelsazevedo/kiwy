@@ -38,6 +38,7 @@ func (c *Csv) WriteLine(line []string) {
 }
 
 func (c *Csv) Flush() {
+	defer c.File.Close()
 	c.Writer.Flush()
 }
 
@@ -47,14 +48,18 @@ func (c *Csv) SendToGcp() {
 	client, err := storage.NewClient(ctx)
 	checkError("Unable to create Gcp client", err)
 
+	file, err := os.Open(c.Filename)
+	checkError("Error to load file", err)
+
 	object := path.Base(c.Filename)
+
+	defer file.Close()
 
 	writerContext := client.Bucket(c.Bucket).Object(object).NewWriter(ctx)
 
 	defer writerContext.Close()
-	defer c.File.Close()
 
-	_, err = io.Copy(writerContext, c.File)
+	_, err = io.Copy(writerContext, file)
 	checkError("Error to send file", err)
 }
 
