@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/michelsazevedo/kiwy/pkg/file"
 	"github.com/michelsazevedo/kiwy/pkg/request"
@@ -22,9 +23,13 @@ func main() {
 		line = []string{
 			res.TableId,
 			res.Key,
+			res.StartDate.String(),
+			res.EndDate.String(),
+			res.SysDate.String(),
+			strconv.FormatFloat(res.SysTime, 'f', 4, 32),
 		}
 		file.WriteLine(line)
 	}
-
+	file.Flush()
 	file.SendToGcp()
 }

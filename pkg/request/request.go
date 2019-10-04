@@ -17,7 +17,7 @@ type Result struct {
 	StartDate    time.Time              `json:"startDate"`
 	EndDate      time.Time              `json:"endDate"`
 	SysDate      time.Time              `json:"sysDate"`
-	SysTime      float32                `json:"sysTime"`
+	SysTime      float64                `json:"sysTime"`
 	Count        int                    `json:"count"`
 	ResultEvents map[string]interface{} `json:"resultEvents"`
 }

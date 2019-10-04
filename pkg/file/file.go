@@ -37,6 +37,10 @@ func (c *Csv) WriteLine(line []string) {
 	checkError("Cannot write to file", err)
 }
 
+func (c *Csv) Flush() {
+	c.Writer.Flush()
+}
+
 func (c *Csv) SendToGcp() {
 	ctx := context.Background()
 
@@ -48,6 +52,7 @@ func (c *Csv) SendToGcp() {
 	writerContext := client.Bucket(c.Bucket).Object(object).NewWriter(ctx)
 
 	defer writerContext.Close()
+	defer c.File.Close()
 
 	_, err = io.Copy(writerContext, c.File)
 	checkError("Error to send file", err)
