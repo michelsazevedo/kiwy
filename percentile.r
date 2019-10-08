@@ -1,4 +1,4 @@
-dirbase <- "resources/csv"
+dirbase <- "/kiwy/resources/csv"
 files <- unlist(list.files(dirbase))
 
 for(i in 1:length(files)) {
@@ -8,7 +8,7 @@ for(i in 1:length(files)) {
   sysTimes <- unlist(data['sysTime'])
   
   percentiles <- quantile(sysTimes, prob = c(0.50, 0.75, 0.90, 0.95, 0.99))
-  filename <- paste("resources", "percentiles", files[i], sep="/")
+  filename <- paste("/kiwy", "resources", "percentiles", files[i], sep="/")
 
   write.csv(percentiles, file = filename)
 }
