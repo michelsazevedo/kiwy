@@ -3,7 +3,7 @@ files <- unlist(list.files(dirbase))
 
 for(i in 1:length(files)) {
   data <- read.csv(paste(dirbase, files[i], sep="/"), header=FALSE)
-  names(data) <- c('table', 'key', 'startDate', 'endDate', 'sysDate', 'sysTime')
+  names(data) <- c('table', 'tenant', 'workflow', 'startDate', 'endDate', 'sysDate', 'sysTime')
 
   sysTimes <- unlist(data['sysTime'])
   

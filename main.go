@@ -28,7 +28,8 @@ func main() {
 	for res := range result {
 		line = []string{
 			res.TableId,
-			res.Key,
+			res.TenantId,
+			res.WorkflowId,
 			res.StartDate.String(),
 			res.EndDate.String(),
 			res.SysDate.String(),
@@ -37,5 +38,5 @@ func main() {
 		file.WriteLine(line)
 	}
 	file.Flush()
-	file.SendToGcp()
+	//file.SendToGcp()
 }

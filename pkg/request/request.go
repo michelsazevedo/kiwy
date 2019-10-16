@@ -12,14 +12,15 @@ const (
 )
 
 type Result struct {
-	TableId      string                 `json:"tableId"`
-	Key          string                 `json:"key"`
-	StartDate    time.Time              `json:"startDate"`
-	EndDate      time.Time              `json:"endDate"`
-	SysDate      time.Time              `json:"sysDate"`
-	SysTime      float64                `json:"sysTime"`
-	Count        int                    `json:"count"`
-	ResultEvents map[string]interface{} `json:"resultEvents"`
+	Query      string    `json:"query"`
+	TableId    string    `json:"tableId"`
+	TenantId   string    `json:"tenantId"`
+	WorkflowId string    `json:"workflowId"`
+	StartDate  time.Time `json:"startDate"`
+	EndDate    time.Time `json:"endDate"`
+	SysDate    time.Time `json:"sysDate"`
+	SysTime    float64   `json:"sysTime"`
+	Count      int       `json:"count"`
 }
 
 func MakeParallelsRequests(numOfRequests int, ch chan Result) {
