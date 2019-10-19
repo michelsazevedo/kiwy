@@ -17,25 +17,23 @@ func main() {
 		log.Fatal("Error to load number of workers")
 	}
 
-	result := make(chan request.Result)
+	collection := make(chan request.CollectionResult)
 	filename := strings.Join([]string{secure.RandomHex(20), "csv"}, ".")
 
-	go request.MakeParallelsRequests(concurrentWorkers, result)
+	go request.MakeParallelsRequests(concurrentWorkers, collection)
 
 	file := file.NewCsv(filename, os.Getenv("BUCKET"))
 	var line []string
 
-	for res := range result {
-		line = []string{
-			res.TableId,
-			res.TenantId,
-			res.WorkflowId,
-			res.StartDate.String(),
-			res.EndDate.String(),
-			res.SysDate.String(),
-			strconv.FormatFloat(res.SysTime, 'f', 4, 32),
+	for result := range collection {
+		for _, res := range result.Result {
+			line = []string{
+				res.DateTime,
+				strconv.Itoa(res.Time),
+				strconv.Itoa(res.Count),
+			}
+			file.WriteLine(line)
 		}
-		file.WriteLine(line)
 	}
 	file.Flush()
 	//file.SendToGcp()

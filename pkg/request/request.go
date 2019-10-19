@@ -4,31 +4,28 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 const (
-	url = "https://us-central1-rdsm-analytics-development.cloudfunctions.net/random1"
+	url = "https://us-east4-rdsm-analytics-development.cloudfunctions.net/Hello?instance=mushin-analytics&database=automation-roi&concurrency=1000"
 )
 
 type Result struct {
-	Query      string    `json:"query"`
-	TableId    string    `json:"tableId"`
-	TenantId   string    `json:"tenantId"`
-	WorkflowId string    `json:"workflowId"`
-	StartDate  time.Time `json:"startDate"`
-	EndDate    time.Time `json:"endDate"`
-	SysDate    time.Time `json:"sysDate"`
-	SysTime    float64   `json:"sysTime"`
-	Count      int       `json:"count"`
+	DateTime string `json:"DateTime"`
+	Time     int    `json:"Time"`
+	Count    int    `json:"Count"`
 }
 
-func MakeParallelsRequests(numOfRequests int, ch chan Result) {
+type CollectionResult struct {
+	Result []Result
+}
+
+func MakeParallelsRequests(numOfRequests int, ch chan CollectionResult) {
 	defer close(ch)
-	var results = []chan Result{}
+	var results = []chan CollectionResult{}
 
 	for i := 0; i < numOfRequests; i++ {
-		results = append(results, make(chan Result))
+		results = append(results, make(chan CollectionResult))
 		go MakeRequest(results[i])
 	}
 
@@ -39,26 +36,26 @@ func MakeParallelsRequests(numOfRequests int, ch chan Result) {
 	}
 }
 
-func MakeRequest(ch chan Result) {
+func MakeRequest(ch chan CollectionResult) {
 	defer close(ch)
 	res, err := http.Get(url)
 	if err != nil {
-		ch <- Result{}
+		ch <- CollectionResult{}
 	}
 
 	defer res.Body.Close()
 
 	jsonData, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		ch <- Result{}
+		ch <- CollectionResult{}
 	}
 
-	var result Result
+	var collection CollectionResult
 
-	err = json.Unmarshal([]byte(jsonData), &result)
+	err = json.Unmarshal([]byte(jsonData), &collection)
 	if err != nil {
-		ch <- Result{}
+		ch <- CollectionResult{}
 	}
 
-	ch <- result
+	ch <- collection
 }
