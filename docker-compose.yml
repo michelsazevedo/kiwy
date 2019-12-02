@@ -8,7 +8,7 @@ services:
       - .:/kiwy
     command: make test
     environment:
-      - CONCURRENCY=10
+      - CONCURRENCY=4000
       - GOOGLE_APPLICATION_CREDENTIALS=/kiwy/gcloud-credentials.json
       - BUCKET=rdsm-analytics-development
 

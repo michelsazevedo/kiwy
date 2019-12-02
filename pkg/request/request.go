@@ -3,11 +3,17 @@ package request
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 const (
-	url = "https://us-east4-rdsm-analytics-development.cloudfunctions.net/Hello?instance=mushin-analytics&database=automation-roi&concurrency=1000"
+	baseUrl = "https://us-central1-rdsm-analytics-development.cloudfunctions.net/random"
+)
+
+var (
+	fn   = 1
+	pool = 1
 )
 
 type Result struct {
@@ -38,7 +44,7 @@ func MakeParallelsRequests(numOfRequests int, ch chan CollectionResult) {
 
 func MakeRequest(ch chan CollectionResult) {
 	defer close(ch)
-	res, err := http.Get(url)
+	res, err := http.Get(GetUrl())
 	if err != nil {
 		ch <- CollectionResult{}
 	}
@@ -58,4 +64,16 @@ func MakeRequest(ch chan CollectionResult) {
 	}
 
 	ch <- collection
+}
+
+func GetUrl() string {
+	if pool >= 100 {
+		pool = 1
+		fn += 1
+	}
+
+	pool += 1
+
+	log.Println("[URL]:", baseUrl+fn)
+	return baseUrl + fn
 }
